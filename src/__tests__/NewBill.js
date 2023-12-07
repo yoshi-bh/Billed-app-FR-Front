@@ -102,30 +102,109 @@ describe("Given I am connected as an employee", () => {
 				const addFileInpt = screen.getByTestId("file");
 				const str = JSON.stringify("someValues");
 				const blob = new Blob([str]);
-				const file = new File([blob], "values.json", { type: 'application/JSON' });
+				const file = new File([blob], "values.json", {
+					type: "application/JSON",
+				});
 
 				const handleAddFile = jest.fn((e) => newBill.handleChangeFile(e));
 				addFileInpt.addEventListener("click", handleAddFile);
 				fireEvent.click(addFileInpt);
 				expect(handleAddFile).toHaveBeenCalled();
 				user.upload(addFileInpt, file);
-				expect(addFileInpt.files.length).toBe(1); // Value to be 0
+				expect(addFileInpt.files.length).toBe(0); // Value to be 0
 				// expect(addFileInpt.files[0].name).toBe("");
 			});
 		});
 
 		describe("when I click on the submit button and all the required inputs are filled", () => {
 			test("Then the form should be submited", () => {
+				Object.defineProperty(window, "localStorage", {
+					value: localStorageMock,
+				});
+				window.localStorage.setItem(
+					"user",
+					JSON.stringify({
+						type: "Employee",
+					})
+				);
+				const onNavigate = (pathname) => {
+					document.body.innerHTML = ROUTES({ pathname });
+				};
+				const store = null;
+				const newBill = new NewBill({
+					document,
+					onNavigate,
+					store,
+					localStorage,
+				});
+
 				const html = NewBillUI();
 				document.body.innerHTML = html;
-				//to-do write assertion
+
+				// Fill the form
+				const datepicker = screen.getByTestId("datepicker");
+				datepicker.value = "2023-12-22";
+				const amount = screen.getByTestId("amount");
+				amount.value = "1";
+				const pct = screen.getByTestId("pct");
+				pct.value = "1";
+				const addFileInpt = screen.getByTestId("file");
+				const str = JSON.stringify("someValues");
+				const blob = new Blob([str]);
+				const file = new File([blob], "values.png", { type: "image/png" });
+				user.upload(addFileInpt, file);
+
+				// const handleAddFile = jest.fn((e) => newBill.handleChangeFile(e));
+				// addFileInpt.addEventListener("click", handleAddFile);
+				// fireEvent.click(addFileInpt);
+
+				// Submit the form
+				const submitBtn = screen.getByTestId("btn-send-bill");
+				const handleSubmitForm = jest.fn((e) => newBill.handleSubmit(e));
+				submitBtn.addEventListener("click", handleSubmitForm);
+				// fireEvent.click(submitBtn);
+
+				expect(handleSubmitForm).toHaveBeenCalled();
+				// expect(handleAddFile).toHaveBeenCalled();
+				// expect(submitBtn.files.length).toBe(1);
+				// expect(submitBtn.files[0].name).toBe("values.png");
 			});
 		});
 		describe("when I click on the submit button but some required inputs are not filled", () => {
 			test("Then the form should not be submited", () => {
+				Object.defineProperty(window, "localStorage", {
+					value: localStorageMock,
+				});
+				window.localStorage.setItem(
+					"user",
+					JSON.stringify({
+						type: "Employee",
+					})
+				);
+				const onNavigate = (pathname) => {
+					document.body.innerHTML = ROUTES({ pathname });
+				};
+				const store = null;
+				const newBill = new NewBill({
+					document,
+					onNavigate,
+					store,
+					localStorage,
+				});
+
 				const html = NewBillUI();
 				document.body.innerHTML = html;
-				//to-do write assertion
+
+				// Submit the form
+				const submitBtn = screen.getByTestId("btn-send-bill");
+				const handleSubmitForm = jest.fn((e) => newBill.handleSubmit(e));
+				submitBtn.addEventListener("submit", handleSubmitForm);
+				fireEvent.submit(submitBtn);
+
+				expect(handleSubmitForm).toHaveBeenCalled();
+				// expect(handleAddFile).toHaveBeenCalled();
+				// expect(submitBtn.files.length).toBe(1);
+				// expect(submitBtn.files[0].name).toBe("values.png");
 			});
 		});
 	});
