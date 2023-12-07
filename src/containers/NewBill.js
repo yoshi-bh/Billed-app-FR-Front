@@ -24,10 +24,9 @@ export default class NewBill {
 		const filePath = e.target.value.split(/\\/g);
 		const fileName = filePath[filePath.length - 1];
 		if (!["jpg", "jpeg", "png"].includes(fileName.split(".").pop())) {
-      this.document.querySelector(`input[data-testid="file"]`)
-			.files[0]
-			console.log("incorrect file type!");
       this.document.querySelector(`input[data-testid="file"]`).value = "";
+      // console.log(this.document.querySelector(`input[data-testid="file"]`).files.length);
+      // console.log(this.document.querySelector(`input[data-testid="file"]`).files[0].name);
 			return;
 		}
 		const formData = new FormData();
