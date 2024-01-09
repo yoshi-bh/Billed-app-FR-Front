@@ -2,14 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { log } from "console";
-
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import mockStore from "../__mocks__/store";
+import mockStore from "../__mocks__/store.js";
 
 import Bills from "../containers/Bills.js";
 import store from "../app/Store.js";
@@ -83,7 +81,7 @@ describe("Given I am connected as an employee", () => {
 	});
 
 	describe("When I click on the eye icon button", () => {
-		test("the modal should be visible", () => {
+		test("the modale should be visible", () => {
 			Object.defineProperty(window, "localStorage", {
 				value: localStorageMock,
 			});
@@ -123,30 +121,6 @@ describe("Given I am connected as an employee", () => {
 			expect(bills[0].fileUrl).toBeTruthy();
 		});
 	});
-
-	// describe("When I am on Bills Page, ...", () => {
-	// 	Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-	//     window.localStorage.setItem('user', JSON.stringify({
-	//       type: 'Admin'
-	//     }))
-	//     document.body.innerHTML = DashboardFormUI(bills[0])
-	//     const onNavigate = (pathname) => {
-	//       document.body.innerHTML = ROUTES({ pathname })
-	//     }
-	//     const store = null
-	//     const dashboard = new Dashboard({
-	//       document, onNavigate, store, bills, localStorage: window.localStorage
-	//     })
-
-	//     const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
-	//     const eye = screen.getByTestId('icon-eye-d')
-	//     eye.addEventListener('click', handleClickIconEye)
-	//     userEvent.click(eye)
-	//     expect(handleClickIconEye).toHaveBeenCalled()
-
-	//     const modale = screen.getByTestId('modaleFileAdmin')
-	//     expect(modale).toBeTruthy()
-	// })
 });
 
 // test d'intégration GET
@@ -168,6 +142,10 @@ describe("Given I am a user connected as Employee", () => {
 			const tableContent = await screen.getByTestId("tbody");
 			expect(tableContent).toBeTruthy();
 			expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
+		});
+		test("recover bills from API", async () => {
+			const bills = await mockStore.bills().list();
+			expect(bills.length).toBe(4);
 		});
 		describe("When an error occurs on API", () => {
 			beforeEach(() => {
