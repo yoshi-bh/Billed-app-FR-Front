@@ -19,10 +19,16 @@ const row = (bill) => {
     `;
 };
 
+const antiChrono = (a, b) => {
+	if (a.sortDate === null) return 1;
+	if (b.sortDate === null) return -1;
+	return a.sortDate < b.sortDate ? 1 : -1;
+};
+
 const rows = (data) => {
 	return data && data.length
 		? data
-				.sort((a, b) => (a.date < b.date ? 1 : -1))
+				.sort(antiChrono)
 				.map((bill) => row(bill))
 				.join("")
 		: "";

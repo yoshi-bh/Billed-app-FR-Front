@@ -46,6 +46,7 @@ export default class {
 							return {
 								...doc,
 								date: formatDate(doc.date),
+								sortDate: doc.date,
 								status: formatStatus(doc.status),
 							};
 						} catch (e) {
@@ -54,7 +55,7 @@ export default class {
 							console.log(e, "for", doc);
 						}
 					});
-					return bills;
+					return bills
 				});
 		}
 	};
